@@ -1,13 +1,13 @@
 import { defaultHandleAction } from "./utils/defaultHandleAction";
 import {
-  IHandleAction,
-  IRPCMessage,
-  STEP_RESPONSE,
-  STEP_REQUEST,
-  IRPCMessageResponse,
-  ICloneObject,
+  IRPCMessagePayload,
   IRPCMessageRequest,
-} from "./utils/tokens";
+  IRPCMessageResponse,
+  STEP_REQUEST,
+  STEP_RESPONSE,
+} from "./interfaces";
+import { ICloneObject } from "./interfaces/ICloneObject";
+import { IHandleAction } from "./interfaces/IHandleAction";
 import { defaultCloneObject } from "./utils/defaultCloneObject";
 import { handleMessages } from "./utils/handleMessage";
 
@@ -15,13 +15,13 @@ export const listenToActions = (
   handleAction: IHandleAction = defaultHandleAction,
   cloneObject: ICloneObject = defaultCloneObject
 ) => {
-  const handleRequest = handleMessages<IRPCMessageRequest>(
+  const handleRequest = handleMessages(
     { step: STEP_REQUEST },
-    async (data) => {
-      const result = cloneObject(await handleAction(data.action, data.payload));
+    async <P extends IRPCMessagePayload>(message: IRPCMessageRequest<P>) => {
+      const result = cloneObject(await handleAction(message.payload));
 
-      const response: IRPCMessageResponse = {
-        ...data,
+      const response: IRPCMessageResponse<P> = {
+        ...message,
         result,
         step: STEP_RESPONSE,
       };

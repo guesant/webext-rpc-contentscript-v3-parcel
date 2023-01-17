@@ -1,13 +1,14 @@
-import { IHandleAction } from "./tokens";
+import { IPayload } from "../../../IPayloads";
+import { IHandleAction } from "../interfaces";
 
-export const defaultHandleAction: IHandleAction = async (
-  action: string,
-  payload: any
-) => {
-  switch (action) {
-    default: {
-      console.log({ action, payload });
+export const defaultHandleAction: IHandleAction<IPayload> = async (payload) => {
+  switch (payload.type) {
+    case "ping": {
       return "pong";
+    }
+
+    default: {
+      return "not implemented";
     }
   }
 };

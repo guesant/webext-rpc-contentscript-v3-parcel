@@ -1,19 +1,19 @@
-import browser from "webextension-polyfill";
+import { IPayloadPing, IPayloadSum } from "../IPayloads";
 import { invokeAction } from "../shared/rpc";
-import { waitReady } from "../shared/rpc/waitReady";
-import { injectScript } from "./utils/injectScript";
+import { injectServer } from "./inject-server";
 
 const main = async () => {
   console.log("client: started");
 
-  await Promise.all([
-    waitReady(),
-    injectScript(browser.runtime.getURL("ContentScript/server/bundle.js")),
-  ]);
+  await injectServer();
 
   console.log("client: ready");
 
-  console.log("ping", await invokeAction("ping"));
+  const resultPing = await invokeAction<IPayloadPing>({ type: "ping" });
+  console.log("ping", resultPing);
+
+  const resultSum = await invokeAction<IPayloadSum>({ type: "sum", data: [2, 2] });
+  console.log("sum", resultSum);
 };
 
 main();

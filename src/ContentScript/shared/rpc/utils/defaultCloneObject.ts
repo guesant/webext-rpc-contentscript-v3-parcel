@@ -1,4 +1,4 @@
-import { ICloneObject } from "./tokens";
+import { ICloneObject } from "../interfaces";
 
-export const defaultCloneObject: ICloneObject = (data: any) =>
+export const defaultCloneObject: ICloneObject = (data) =>
   JSON.parse(JSON.stringify(data));
