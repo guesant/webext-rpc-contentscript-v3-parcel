@@ -1,5 +1,6 @@
 import { defaultHandleAction } from "./utils/defaultHandleAction";
 import {
+  InferResult,
   IRPCMessagePayload,
   IRPCMessageRequest,
   IRPCMessageResponse,
@@ -17,8 +18,8 @@ export const listenToActions = (
 ) => {
   const handleRequest = handleMessages(
     { step: STEP_REQUEST },
-    async <P extends IRPCMessagePayload>(message: IRPCMessageRequest<P>) => {
-      const result = cloneObject(await handleAction(message.payload));
+    async <P extends IRPCMessagePayload, R extends InferResult<P>>(message: IRPCMessageRequest<P>) => {
+      const result = cloneObject(await handleAction(message.payload)) as R;
 
       const response: IRPCMessageResponse<P> = {
         ...message,

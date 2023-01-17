@@ -1,8 +1,8 @@
 import { IRPCMessage, IRPCMessagePayload } from "../interfaces";
 
 export const handleMessages = <
-  P extends IRPCMessagePayload,
-  M extends IRPCMessage<P>
+  P extends IRPCMessagePayload = IRPCMessagePayload,
+  M extends IRPCMessage<P> = IRPCMessage<P>
 >(
   condition: Partial<Pick<M, "step" | "id">>,
   callback: (message: M) => void
@@ -16,10 +16,7 @@ export const handleMessages = <
 
     const message = event.data as M;
 
-    if (
-      (condition.id && condition.id !== message.id) ||
-      (condition.step && condition.step !== message.step)
-    ) {
+    if ((condition.id && condition.id !== message.id) || (condition.step && condition.step !== message.step)) {
       return;
     }
 
