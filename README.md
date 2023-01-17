@@ -38,25 +38,11 @@ This script have access to the `chrome` and `browser` APIS.
 ```ts
 // src/ContentScript/client/main.ts
 
-import { IPayloadPing, IPayloadSum } from "../IPayloads";
-import { invokeAction } from "../shared/rpc";
-import { injectServer } from "./inject-server";
+console.log("ping", await invokeAction({ type: "ping" }));
+// output: ping pong
 
-const main = async () => {
-  console.log("client: started");
-
-  await injectServer();
-
-  console.log("client: ready");
-
-  const resultPing = await invokeAction<IPayloadPing>({ type: "ping" });
-  console.log("ping", resultPing);
-
-  const resultSum = await invokeAction<IPayloadSum>({ type: "sum", data: [2, 2] });
-  console.log("sum", resultSum);
-};
-
-main();
+console.log("sum", await invokeAction({ type: "sum", data: [2, 2] }));
+// output: sum 4
 ```
 
 #### ContentScript/server
@@ -72,10 +58,7 @@ Handle Actions util: [`src/ContentScript/server/handleActions.ts`](src/ContentSc
 ```ts
 // src/ContentScript/server/handleActions.ts
 
-import { IPayload } from "../IPayloads";
-import { IHandleAction } from "../shared/rpc/interfaces";
-
-export const handleActions: IHandleAction<IPayload> = async (payload) => {
+export const handleActions = async (payload) => {
   switch (payload.type) {
     case "ping": {
       return "pong";
