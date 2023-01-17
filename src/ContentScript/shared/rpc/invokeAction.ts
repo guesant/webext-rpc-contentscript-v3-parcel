@@ -1,29 +1,36 @@
-import { handleMessages } from "./utils/handleMessage";
+import { IPayload } from "../../IPayloads";
 import {
-  IRPCMessage,
-  STEP_RESPONSE,
+  InferResult,
+  IRPCMessagePayload,
   IRPCMessageRequest,
-  STEP_REQUEST,
   IRPCMessageResponse,
-} from "./utils/tokens";
+  STEP_REQUEST,
+  STEP_RESPONSE,
+} from "./interfaces";
+import { handleMessages } from "./utils/handleMessage";
 
-export const invokeAction = <Result>(action: string, payload?: any) => {
+export const invokeAction = <
+  P extends IRPCMessagePayload,
+  R extends InferResult<P> = InferResult<P>
+>(
+  payload: P
+): Promise<R> => {
   const id = Math.random().toString();
 
-  return new Promise<Result>((resolve) => {
-    const handleResponse = handleMessages<IRPCMessageResponse>(
+  return new Promise<R>((resolve) => {
+    const handleResponse = handleMessages(
       { step: STEP_RESPONSE, id },
-      (message) => {
+      (message: IRPCMessageResponse<P>) => {
         window.removeEventListener("message", handleResponse);
-        resolve(message.result);
+        const result = message.result as R;
+        resolve(result);
       }
     );
 
     window.addEventListener("message", handleResponse);
 
-    const request: IRPCMessageRequest = {
+    const request: IRPCMessageRequest<P> = {
       id,
-      action,
       payload,
       kind: "rpc",
       step: STEP_REQUEST,

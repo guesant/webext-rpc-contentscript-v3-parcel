@@ -1,8 +1,11 @@
-import { IRPCMessage, IRPCMessageBase } from "./tokens";
+import { IRPCMessage, IRPCMessagePayload } from "../interfaces";
 
-export const handleMessages = <Message extends IRPCMessageBase>(
-  condition: Partial<Pick<IRPCMessage, "step" | "id">>,
-  callback: (message: Message) => void
+export const handleMessages = <
+  P extends IRPCMessagePayload,
+  M extends IRPCMessage<P>
+>(
+  condition: Partial<Pick<M, "step" | "id">>,
+  callback: (message: M) => void
 ) => {
   return (event: MessageEvent<unknown>) => {
     const kind: string | undefined = (event.data as any)?.kind;
@@ -11,7 +14,7 @@ export const handleMessages = <Message extends IRPCMessageBase>(
       return;
     }
 
-    const message = event.data as Message;
+    const message = event.data as M;
 
     if (
       (condition.id && condition.id !== message.id) ||
