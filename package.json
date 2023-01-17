@@ -1,0 +1,40 @@
+{
+  "name": "webext-rpc-contentscript-v3-parcel",
+  "private": true,
+  "license": "MIT",
+  "targets": {
+    "webext": {
+      "context": "browser",
+      "outputFormat": "global"
+    }
+  },
+  "scripts": {
+    "start": "rimraf dist; npm run vendors:build && concurrently \"npm:vendors:watch\" \"npm:webext:start\"",
+    "build": "rimraf dist; npm run vendors:build && npm run webext:build",
+    "webext:start": "parcel watch src/manifest.json --target webext --host localhost --no-hmr --no-content-hash",
+    "webext:build": "parcel build src/manifest.json --target webext --no-scope-hoist",
+    "vendors:build": "rollup -c rollup.config.mjs",
+    "vendors:watch": "rollup -c rollup.config.mjs --watch"
+  },
+  "alias": {
+    "browser": {
+      "global": "browser"
+    }
+  },
+  "dependencies": {
+    "webextension-polyfill": "^0.10.0"
+  },
+  "devDependencies": {
+    "@parcel/config-webextension": "^2.8.2",
+    "@parcel/packager-ts": "^2.8.2",
+    "@parcel/transformer-inline-string": "^2.8.2",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/webextension-polyfill": "^0.10.0",
+    "concurrently": "^7.6.0",
+    "parcel": "^2.8.2",
+    "rimraf": "^4.1.0",
+    "rollup": "^3.10.0",
+    "typescript": "^4.9.4"
+  }
+}

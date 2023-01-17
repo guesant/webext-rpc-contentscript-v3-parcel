@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Sample Web Extension",
+  "version": "0.0.1",
+  "permissions": [],
+  "web_accessible_resources": [
+    {
+      "resources": ["ContentScript/server/bundle.js"],
+      "matches": ["https://example.com/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://example.com/*"],
+      "js": [
+        "npm:webextension-polyfill/dist/browser-polyfill.min.js",
+        "ContentScript/client/main.ts"
+      ]
+    }
+  ]
+}

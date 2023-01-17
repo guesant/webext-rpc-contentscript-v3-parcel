@@ -1,0 +1,14 @@
+{
+  "extends": "@parcel/config-webextension",
+  "transformers": {
+    "*bundle.js": [
+      "@parcel/transformer-raw"
+    ]
+  },
+  "optimizers": {
+    "*bundle.js": []
+  },
+  "packagers": {
+    "*bundle.js": "@parcel/packager-raw"
+  }
+}
